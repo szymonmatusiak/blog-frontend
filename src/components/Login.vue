@@ -18,7 +18,7 @@
           </span>
         </p>
       </div>
-      <a class="button is-primary" v-bind:onclick="login">Login</a>
+      <button class="button is-primary" v-on:click="login">Login</button>
 
     </div>
   </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import axios from "../auth/axios";
+  import axios from 'axios';
 
   export default {
     name: 'Login',
@@ -37,17 +37,44 @@
       }
     },
     methods: {
-      login() {
-        axios.post(`http://localhost:8080/login`, this.$data).then(response => {
-          // JSON responses are automatically parsed.
-          console.log(response.header('Authorization '))
+      SignIn: function (event) {
+        console.log('login clicked')
+        let data = JSON.stringify({
+          password: this.password,
+          username: this.username
         })
-          .catch(e => {
-            this.errors.push(e)
-          })
+
+        axios.post('http://localhost:8080/login', data, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': 'http://localhost:8081'
+
+            }
+          }
+        ).then(request => this.loginSuccessful(request))
+          .catch(() => this.loginFailed())
+      },
+
+
+      login: function (event) {
+        console.log("login")
+        axios.post(`http://localhost:8080/login`, {username: this.username, password: this.password})
+          .then(request => this.loginSuccessful(request))
+          .catch(() => this.loginFailed())
+      },
+      loginSuccessful(req) {
+        console.log("log")
+        console.log(req.headers);
+        console.log(req.status);
+        console.log(req.statusText);
+        console.log(req.headers);
+      },
+      loginFailed() {
+        console.log("logi2n3")
+      }
+
       }
     }
-  }
 </script>
 
 <style scoped>

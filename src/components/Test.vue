@@ -30,6 +30,8 @@
         axios.get(`http://localhost:8080/api2/tester`)
           .then(response => {
             // JSON responses are automatically parsed.
+            console.log("test")
+
             this.posts = response.data
           })
           .catch(e => {
