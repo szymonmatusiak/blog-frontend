@@ -4,4 +4,4 @@ import VueAxios from 'vue-axios'
 
 import axios from './axios'
 
-Vue.use(axios, axios)
+Vue.use(VueAxios, axios)

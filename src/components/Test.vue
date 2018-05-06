@@ -11,6 +11,13 @@
           {{error.message}}
         </li>
       </ul>
+      <ul v-if="headers && headers.length">
+        <li v-for="header of headers">
+          <p><strong>{{header.toString()}}</strong></p>
+        </li>
+      </ul>
+    <h1>{{ string }}</h1>
+
   </div>
 </template>
 
@@ -23,15 +30,16 @@
         return {
           posts: [],
           errors: [],
+          headers: [],
+          string: '',
           msg: 'Welcome to Your Vue.js App'
         }
       },
       created() {
         axios.get(`http://localhost:8080/api2/tester`)
           .then(response => {
-            // JSON responses are automatically parsed.
-            console.log("test")
-
+            axios.defaults.headers.common['Authorization']   ='';
+            this.headers = response.headers
             this.posts = response.data
           })
           .catch(e => {

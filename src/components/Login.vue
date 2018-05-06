@@ -19,7 +19,16 @@
         </p>
       </div>
       <button class="button is-primary" v-on:click="login">Login</button>
-
+      <ul v-if="headers && headers.length">
+        <li v-for="header of headers">
+          <p><strong>{{header}}</strong></p>
+        </li>
+      </ul>
+      <ul v-if="posts && posts.length">
+        <li v-for="post of posts">
+          <p><strong>{{post}}</strong></p>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -32,42 +41,38 @@
     name: 'Login',
     data () {
       return {
+        header: '',
+        posts: [],
         username: '',
         password: ''
       }
     },
     methods: {
-      SignIn: function (event) {
-        console.log('login clicked')
-        let data = JSON.stringify({
-          password: this.password,
-          username: this.username
-        })
-
-        axios.post('http://localhost:8080/login', data, {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': 'http://localhost:8081'
-
-            }
-          }
-        ).then(request => this.loginSuccessful(request))
-          .catch(() => this.loginFailed())
-      },
-
-
       login: function (event) {
         console.log("login")
         axios.post(`http://localhost:8080/login`, {username: this.username, password: this.password})
           .then(request => this.loginSuccessful(request))
           .catch(() => this.loginFailed())
       },
-      loginSuccessful(req) {
+      loginSuccessful: function (req) {
+        let config = {
+          headers: {
+            authorization: req.headers.authorization,
+          }
+        }
+        this.header = req.headers.authorization
         console.log("log")
-        console.log(req.headers);
+        console.log(req.headers.authorization);
         console.log(req.status);
         console.log(req.statusText);
-        console.log(req.headers);
+        axios.get(`http://localhost:8080/api/tester2`,config)
+          .then(response => {
+            console.log(req.headers.authorization);
+            this.posts = response.data
+          })
+          .catch(e => {
+            this.errors.push(e)
+          })
       },
       loginFailed() {
         console.log("logi2n3")
