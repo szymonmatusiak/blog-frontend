@@ -19,6 +19,7 @@
         </p>
       </div>
       <button class="button is-primary" v-on:click="login">Login</button>
+      <button class="button is-primary" v-on:click="test">test</button>
       <ul v-if="headers && headers.length">
         <li v-for="header of headers">
           <p><strong>{{header}}</strong></p>
@@ -36,7 +37,12 @@
 
 <script>
   import axios from 'axios';
+  import store from '../token'
+  let config = {
+    headers: {
 
+    }
+  }
   export default {
     name: 'Login',
     data () {
@@ -55,19 +61,19 @@
           .catch(() => this.loginFailed())
       },
       loginSuccessful: function (req) {
-        let config = {
-          headers: {
-            authorization: req.headers.authorization,
-          }
-        }
+        localStorage.setItem("auth", req.headers.authorization)
+        config.headers.authorization = req.headers.authorization
         this.header = req.headers.authorization
+        console.log(localStorage.getItem('auth'))
+        console.log({'authorization: ': localStorage.getItem('auth')})
         console.log("log")
         console.log(req.headers.authorization);
         console.log(req.status);
         console.log(req.statusText);
-        axios.get(`http://localhost:8080/api/tester2`,config)
+      },
+      test: function(event){
+        axios.get(`http://localhost:8080/api/tester2`, config.headers.authorization=localStorage.getItem('auth'))
           .then(response => {
-            console.log(req.headers.authorization);
             this.posts = response.data
           })
           .catch(e => {
